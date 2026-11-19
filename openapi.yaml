@@ -1,0 +1,1853 @@
+openapi: 3.1.0
+info:
+  title: BankOS API
+  description: Backend multi-banco de BankOS. Un login por institución (tenant).
+  contact:
+    name: BankOS
+  version: v1
+servers:
+- url: http://localhost:8080
+  description: Local Development Server
+security:
+- bearerAuth: []
+paths:
+  /api/v1/settings:
+    get:
+      tags:
+      - settings-controller
+      operationId: getSettings
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTenantSettingsResponse"
+    put:
+      tags:
+      - settings-controller
+      operationId: updateSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSettingsRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTenantSettingsResponse"
+  /api/v1/webhooks:
+    get:
+      tags:
+      - webhook-controller
+      operationId: list
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseListWebhookResponse"
+    post:
+      tags:
+      - webhook-controller
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateWebhookRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseWebhookResponse"
+  /api/v1/users:
+    get:
+      tags:
+      - user-controller
+      operationId: list_1
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponsePageResponseUserResponse"
+    post:
+      tags:
+      - user-controller
+      operationId: create_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseUserResponse"
+  /api/v1/user/banks/{linkId}/reauthorize:
+    post:
+      tags:
+      - bank-link-controller
+      operationId: reauthorizeBank
+      parameters:
+      - name: linkId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseLinkedBankResponse"
+  /api/v1/transactions/withdrawals:
+    post:
+      tags:
+      - transaction-controller
+      operationId: withdrawal
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WithdrawalRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTransactionResponse"
+  /api/v1/transactions/transfers:
+    post:
+      tags:
+      - transaction-controller
+      operationId: transfer
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTransactionResponse"
+  /api/v1/transactions/transfers/preview:
+    post:
+      tags:
+      - transaction-controller
+      operationId: preview
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferPreviewRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTransferPreviewResponse"
+  /api/v1/transactions/deposits:
+    post:
+      tags:
+      - transaction-controller
+      operationId: deposit
+      parameters:
+      - name: Idempotency-Key
+        in: header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepositRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTransactionResponse"
+  /api/v1/tenants:
+    get:
+      tags:
+      - tenant-controller
+      operationId: list_2
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseListTenantResponse"
+    post:
+      tags:
+      - tenant-controller
+      operationId: create_2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTenantRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTenantResponse"
+  /api/v1/settings/exchange-rates:
+    get:
+      tags:
+      - settings-controller
+      operationId: listExchangeRates
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseListExchangeRateResponse"
+    post:
+      tags:
+      - settings-controller
+      operationId: createExchangeRate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateExchangeRateRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseExchangeRateResponse"
+  /api/v1/customers:
+    get:
+      tags:
+      - customer-controller
+      operationId: list_3
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponsePageResponseCustomerResponse"
+    post:
+      tags:
+      - customer-controller
+      operationId: create_3
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseCustomerResponse"
+  /api/v1/banks/link:
+    post:
+      tags:
+      - bank-link-controller
+      operationId: linkBank
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LinkBankRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseLinkedBankResponse"
+  /api/v1/auth/login:
+    post:
+      tags:
+      - auth-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseLoginResponse"
+  /api/v1/auth/exchange-bank-token:
+    post:
+      tags:
+      - bank-link-controller
+      operationId: exchangeBankToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExchangeTokenRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseExchangeTokenResponse"
+  /api/v1/accounts:
+    get:
+      tags:
+      - account-controller
+      operationId: list_4
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponsePageResponseAccountResponse"
+    post:
+      tags:
+      - account-controller
+      operationId: create_4
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccountRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseAccountResponse"
+  /api/v1/user/banks/{linkId}/default:
+    patch:
+      tags:
+      - bank-link-controller
+      operationId: setDefaultBank
+      parameters:
+      - name: linkId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseVoid"
+  /api/v1/webhooks/events:
+    get:
+      tags:
+      - webhook-controller
+      operationId: events
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponsePageResponseOutboxEventResponse"
+  /api/v1/users/{id}:
+    get:
+      tags:
+      - user-controller
+      operationId: get
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseUserResponse"
+  /api/v1/user/banks:
+    get:
+      tags:
+      - bank-link-controller
+      operationId: getLinkedBanks
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseListLinkedBankResponse"
+  /api/v1/transactions:
+    get:
+      tags:
+      - transaction-controller
+      operationId: history
+      parameters:
+      - name: accountId
+        in: query
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponsePageResponseTransactionResponse"
+  /api/v1/transactions/{id}:
+    get:
+      tags:
+      - transaction-controller
+      operationId: get_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTransactionResponse"
+  /api/v1/tenants/{id}:
+    get:
+      tags:
+      - tenant-controller
+      operationId: get_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseTenantResponse"
+  /api/v1/settings/exchange-rates/{id}:
+    get:
+      tags:
+      - settings-controller
+      operationId: getExchangeRate
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseExchangeRateResponse"
+  /api/v1/customers/{id}:
+    get:
+      tags:
+      - customer-controller
+      operationId: get_3
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseCustomerResponse"
+  /api/v1/banks/available:
+    get:
+      tags:
+      - bank-link-controller
+      operationId: getAvailableBanks
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseListAvailableBankResponse"
+  /api/v1/auth/me:
+    get:
+      tags:
+      - auth-controller
+      operationId: me
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseMeResponse"
+  /api/v1/audit-logs:
+    get:
+      tags:
+      - audit-controller
+      operationId: list_5
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponsePageResponseAuditLogResponse"
+  /api/v1/audit-logs/{id}:
+    get:
+      tags:
+      - audit-controller
+      operationId: get_4
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseAuditLogResponse"
+  /api/v1/accounts/{id}:
+    get:
+      tags:
+      - account-controller
+      operationId: get_5
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseAccountResponse"
+  /api/v1/accounts/all:
+    get:
+      tags:
+      - account-controller
+      operationId: listAll
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseListAccountResponse"
+  /api/v1/user/banks/{linkId}:
+    delete:
+      tags:
+      - bank-link-controller
+      operationId: unlinkBank
+      parameters:
+      - name: linkId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ApiResponseVoid"
+components:
+  schemas:
+    UpdateSettingsRequest:
+      type: object
+      properties:
+        settings:
+          type: object
+          additionalProperties:
+            type: string
+      required:
+      - settings
+    ApiResponseTenantSettingsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/TenantSettingsResponse"
+        correlationId:
+          type: string
+    TenantSettingsResponse:
+      type: object
+      properties:
+        settings:
+          type: object
+          additionalProperties:
+            type: string
+    CreateWebhookRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          maxLength: 500
+          minLength: 0
+        events:
+          type: string
+          maxLength: 500
+          minLength: 0
+        secret:
+          type: string
+          maxLength: 255
+          minLength: 16
+      required:
+      - events
+      - secret
+      - url
+    ApiResponseWebhookResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/WebhookResponse"
+        correlationId:
+          type: string
+    WebhookResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        url:
+          type: string
+        events:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    CreateUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+        fullName:
+          type: string
+          maxLength: 150
+          minLength: 0
+        password:
+          type: string
+          maxLength: 100
+          minLength: 8
+        role:
+          type: string
+          enum:
+          - PLATFORM_ADMIN
+          - TENANT_ADMIN
+          - OPERATOR
+          - AUDITOR
+      required:
+      - email
+      - fullName
+      - password
+      - role
+    ApiResponseUserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/UserResponse"
+        correlationId:
+          type: string
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        fullName:
+          type: string
+        role:
+          type: string
+          enum:
+          - PLATFORM_ADMIN
+          - TENANT_ADMIN
+          - OPERATOR
+          - AUDITOR
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ApiResponseLinkedBankResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/LinkedBankResponse"
+        correlationId:
+          type: string
+    LinkedBankResponse:
+      type: object
+      properties:
+        linkId:
+          type: string
+          format: uuid
+        tenantId:
+          type: string
+          format: uuid
+        tenantCode:
+          type: string
+        tenantName:
+          type: string
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        logoUrl:
+          type: string
+        accountNickname:
+          type: string
+        accountNumberMask:
+          type: string
+        accountType:
+          type: string
+        authStatus:
+          type: string
+        authMechanism:
+          type: string
+        isDefault:
+          type: boolean
+        lastSyncAt:
+          type: string
+          format: date-time
+    WithdrawalRequest:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          minimum: 0.0001
+        currency:
+          type: string
+          minLength: 1
+          pattern: "[A-Za-z]{3}"
+        description:
+          type: string
+          maxLength: 255
+          minLength: 0
+      required:
+      - accountId
+      - amount
+      - currency
+    ApiResponseTransactionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/TransactionResponse"
+        correlationId:
+          type: string
+    TransactionEntryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        direction:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    TransactionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        status:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        fee:
+          type: number
+        exchangeRate:
+          type: number
+        sourceAccountId:
+          type: string
+          format: uuid
+        destinationAccountId:
+          type: string
+          format: uuid
+        description:
+          type: string
+        correlationId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionEntryResponse"
+    TransferRequest:
+      type: object
+      properties:
+        sourceAccountId:
+          type: string
+          format: uuid
+        targetAccountId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          minimum: 0.0001
+        currency:
+          type: string
+          minLength: 1
+          pattern: "[A-Za-z]{3}"
+        description:
+          type: string
+          maxLength: 255
+          minLength: 0
+      required:
+      - amount
+      - currency
+      - sourceAccountId
+      - targetAccountId
+    TransferPreviewRequest:
+      type: object
+      properties:
+        sourceAccountId:
+          type: string
+          format: uuid
+        targetAccountId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          minimum: 0.0001
+        currency:
+          type: string
+          minLength: 1
+          pattern: "[A-Za-z]{3}"
+      required:
+      - amount
+      - currency
+      - sourceAccountId
+      - targetAccountId
+    ApiResponseTransferPreviewResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/TransferPreviewResponse"
+        correlationId:
+          type: string
+    TransferPreviewResponse:
+      type: object
+      properties:
+        sourceAccountId:
+          type: string
+          format: uuid
+        targetAccountId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+        sourceCurrency:
+          type: string
+        targetCurrency:
+          type: string
+        exchangeRate:
+          type: number
+        fee:
+          type: number
+        debitAmount:
+          type: number
+        creditAmount:
+          type: number
+    DepositRequest:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          minimum: 0.0001
+        currency:
+          type: string
+          minLength: 1
+          pattern: "[A-Za-z]{3}"
+        description:
+          type: string
+          maxLength: 255
+          minLength: 0
+      required:
+      - accountId
+      - amount
+      - currency
+    CreateTenantRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 50
+          minLength: 0
+          pattern: "[A-Za-z0-9_]+"
+        name:
+          type: string
+          maxLength: 150
+          minLength: 0
+        primaryColor:
+          type: string
+          pattern: "^#([A-Fa-f0-9]{6})$"
+        secondaryColor:
+          type: string
+          pattern: "^#([A-Fa-f0-9]{6})$"
+        logoUrl:
+          type: string
+          maxLength: 500
+          minLength: 0
+      required:
+      - code
+      - name
+    ApiResponseTenantResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/TenantResponse"
+        correlationId:
+          type: string
+    TenantResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        logoUrl:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    CreateExchangeRateRequest:
+      type: object
+      properties:
+        fromCurrency:
+          type: string
+          minLength: 1
+          pattern: "[A-Za-z]{3}"
+        toCurrency:
+          type: string
+          minLength: 1
+          pattern: "[A-Za-z]{3}"
+        rate:
+          type: number
+          minimum: 0.00000001
+        effectiveFrom:
+          type: string
+          format: date-time
+        effectiveTo:
+          type: string
+          format: date-time
+      required:
+      - effectiveFrom
+      - fromCurrency
+      - rate
+      - toCurrency
+    ApiResponseExchangeRateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/ExchangeRateResponse"
+        correlationId:
+          type: string
+    ExchangeRateResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fromCurrency:
+          type: string
+        toCurrency:
+          type: string
+        rate:
+          type: number
+        effectiveFrom:
+          type: string
+          format: date-time
+        effectiveTo:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    CreateCustomerRequest:
+      type: object
+      properties:
+        documentType:
+          type: string
+          maxLength: 30
+          minLength: 0
+        documentNumber:
+          type: string
+          maxLength: 50
+          minLength: 0
+        fullName:
+          type: string
+          maxLength: 150
+          minLength: 0
+      required:
+      - documentNumber
+      - documentType
+      - fullName
+    ApiResponseCustomerResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/CustomerResponse"
+        correlationId:
+          type: string
+    CustomerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        documentType:
+          type: string
+        documentNumber:
+          type: string
+        fullName:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    LinkBankRequest:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          maxLength: 50
+          minLength: 0
+        accountNickname:
+          type: string
+          maxLength: 100
+          minLength: 0
+        accountType:
+          type: string
+          maxLength: 50
+          minLength: 0
+        consentToken:
+          type: string
+      required:
+      - tenantCode
+    LoginRequest:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          maxLength: 50
+          minLength: 0
+        email:
+          type: string
+          maxLength: 255
+          minLength: 0
+        password:
+          type: string
+          maxLength: 100
+          minLength: 0
+      required:
+      - email
+      - password
+    ApiResponseLoginResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/LoginResponse"
+        correlationId:
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+        expiresIn:
+          type: integer
+          format: int64
+        user:
+          $ref: "#/components/schemas/UserSummary"
+        tenant:
+          $ref: "#/components/schemas/TenantSummary"
+        masterUser:
+          $ref: "#/components/schemas/MasterUserSummary"
+        linkedBanks:
+          type: array
+          items:
+            $ref: "#/components/schemas/LinkedBankResponse"
+    MasterUserSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        fullName:
+          type: string
+        phone:
+          type: string
+    TenantSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name:
+          type: string
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        logoUrl:
+          type: string
+    UserSummary:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        fullName:
+          type: string
+        role:
+          type: string
+          enum:
+          - PLATFORM_ADMIN
+          - TENANT_ADMIN
+          - OPERATOR
+          - AUDITOR
+    ExchangeTokenRequest:
+      type: object
+      properties:
+        tenantCode:
+          type: string
+          maxLength: 50
+          minLength: 0
+      required:
+      - tenantCode
+    ApiResponseExchangeTokenResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/ExchangeTokenResponse"
+        correlationId:
+          type: string
+    ExchangeTokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+        expiresIn:
+          type: integer
+          format: int64
+        user:
+          $ref: "#/components/schemas/UserSummary"
+        tenant:
+          $ref: "#/components/schemas/TenantSummary"
+    CreateAccountRequest:
+      type: object
+      properties:
+        customerId:
+          type: string
+          format: uuid
+        currency:
+          type: string
+          minLength: 1
+          pattern: "[A-Za-z]{3}"
+      required:
+      - currency
+      - customerId
+    AccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        customerId:
+          type: string
+          format: uuid
+        accountNumber:
+          type: string
+        currency:
+          type: string
+        balance:
+          type: number
+        status:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ApiResponseAccountResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/AccountResponse"
+        correlationId:
+          type: string
+    ApiResponseVoid:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data: {}
+        correlationId:
+          type: string
+    ApiResponseListWebhookResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/WebhookResponse"
+        correlationId:
+          type: string
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    ApiResponsePageResponseOutboxEventResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/PageResponseOutboxEventResponse"
+        correlationId:
+          type: string
+    OutboxEventResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        webhookConfigId:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+        payload:
+          type: string
+        status:
+          type: string
+        attempts:
+          type: integer
+          format: int32
+        nextRetryAt:
+          type: string
+          format: date-time
+        processedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    PageResponseOutboxEventResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OutboxEventResponse"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    ApiResponsePageResponseUserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/PageResponseUserResponse"
+        correlationId:
+          type: string
+    PageResponseUserResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserResponse"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    ApiResponseListLinkedBankResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LinkedBankResponse"
+        correlationId:
+          type: string
+    ApiResponsePageResponseTransactionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/PageResponseTransactionResponse"
+        correlationId:
+          type: string
+    PageResponseTransactionResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionResponse"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    ApiResponseListTenantResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/TenantResponse"
+        correlationId:
+          type: string
+    ApiResponseListExchangeRateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExchangeRateResponse"
+        correlationId:
+          type: string
+    ApiResponsePageResponseCustomerResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/PageResponseCustomerResponse"
+        correlationId:
+          type: string
+    PageResponseCustomerResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CustomerResponse"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    ApiResponseListAvailableBankResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/AvailableBankResponse"
+        correlationId:
+          type: string
+    AvailableBankResponse:
+      type: object
+      properties:
+        tenantId:
+          type: string
+          format: uuid
+        code:
+          type: string
+        name:
+          type: string
+        primaryColor:
+          type: string
+        secondaryColor:
+          type: string
+        logoUrl:
+          type: string
+        defaultAuthMechanism:
+          type: string
+        isLinked:
+          type: boolean
+    ApiResponseMeResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/MeResponse"
+        correlationId:
+          type: string
+    MeResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/UserSummary"
+        tenant:
+          $ref: "#/components/schemas/TenantSummary"
+    ApiResponsePageResponseAuditLogResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/PageResponseAuditLogResponse"
+        correlationId:
+          type: string
+    AuditLogResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        actorUserId:
+          type: string
+          format: uuid
+        action:
+          type: string
+        resourceType:
+          type: string
+        resourceId:
+          type: string
+          format: uuid
+        metadata:
+          type: string
+        correlationId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    PageResponseAuditLogResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AuditLogResponse"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    ApiResponseAuditLogResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/AuditLogResponse"
+        correlationId:
+          type: string
+    ApiResponsePageResponseAccountResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          $ref: "#/components/schemas/PageResponseAccountResponse"
+        correlationId:
+          type: string
+    PageResponseAccountResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountResponse"
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    ApiResponseListAccountResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/AccountResponse"
+        correlationId:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
